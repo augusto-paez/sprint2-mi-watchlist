@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import items from './data/items';
 import ItemList from './components/ItemList';
 import Navbar from './components/Navbar';
@@ -11,6 +11,14 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const total = list.length;
+
+  useEffect(() => {
+    if (total > 0) {
+      document.title = `(${total}) Después Lo Juego | Mi Watchlist`;
+    } else {
+      document.title = 'Después Lo Juego | Mi Watchlist';
+    }
+  }, [total]);
 
   const catalogoFiltrado = items.filter((item) =>
     item.nombre.toLowerCase().includes(searchTerm.trim().toLowerCase())
@@ -26,10 +34,10 @@ export default function App() {
     });
   };
 
-
   const remove = (item) => {
     setList((prevList) => prevList.filter((i) => i.id !== item.id));
   };
+
   const clear = () => {
     setList([]);
   };
