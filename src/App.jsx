@@ -5,8 +5,19 @@ import Navbar from './components/Navbar';
 import ListPanel from './components/ListPanel';
 import SearchBar from './components/SearchBar';
 
+const STORAGE_KEY = 'despues-lo-juego:watchlist';
+
 export default function App() {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error('Error al leer de localStorage:', error);
+      return [];
+    }
+  });
+
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -19,6 +30,14 @@ export default function App() {
       document.title = 'Después Lo Juego | Mi Watchlist';
     }
   }, [total]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch (error) {
+      console.error('Error al guardar en localStorage:', error);
+    }
+  }, [list]);
 
   const catalogoFiltrado = items.filter((item) =>
     item.nombre.toLowerCase().includes(searchTerm.trim().toLowerCase())
@@ -40,6 +59,11 @@ export default function App() {
 
   const clear = () => {
     setList([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Error al remover de localStorage:', error);
+    }
   };
 
   const isInList = (item) => list.some((i) => i.id === item.id);
