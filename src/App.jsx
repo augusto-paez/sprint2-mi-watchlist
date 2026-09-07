@@ -4,25 +4,20 @@ import ItemList from './components/ItemList';
 import Navbar from './components/Navbar';
 import ListPanel from './components/ListPanel';
 import SearchBar from './components/SearchBar';
-
-const STORAGE_KEY = 'despues-lo-juego:watchlist';
+import { useMisJuegos } from './hooks/useMisJuegos';
+import { useToggle } from './hooks/useToggle';
 
 export default function App() {
-  const [list, setList] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error al leer de localStorage:', error);
-      return [];
-    }
-  });
+  // Hook de dominio de juegos
+  const { list, total, isInList, toggle, remove, clear } = useMisJuegos();
 
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  // Hook de UI para el panel
+  const [isPanelOpen, , openPanel, closePanel] = useToggle(false);
+
+  // Búsqueda en vivo
   const [searchTerm, setSearchTerm] = useState('');
 
-  const total = list.length;
-
+  // EFECTO: Título de pestaña reactivo
   useEffect(() => {
     if (total > 0) {
       document.title = `(${total}) Después Lo Juego | Mi Watchlist`;
@@ -31,48 +26,16 @@ export default function App() {
     }
   }, [total]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    } catch (error) {
-      console.error('Error al guardar en localStorage:', error);
-    }
-  }, [list]);
-
+  // ESTADO DERIVADO: Catálogo filtrado
   const catalogoFiltrado = items.filter((item) =>
     item.nombre.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
-
-  const toggle = (item) => {
-    setList((prevList) => {
-      const exists = prevList.some((i) => i.id === item.id);
-      if (exists) {
-        return prevList.filter((i) => i.id !== item.id);
-      }
-      return [...prevList, item];
-    });
-  };
-
-  const remove = (item) => {
-    setList((prevList) => prevList.filter((i) => i.id !== item.id));
-  };
-
-  const clear = () => {
-    setList([]);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-      console.error('Error al remover de localStorage:', error);
-    }
-  };
-
-  const isInList = (item) => list.some((i) => i.id === item.id);
 
   return (
     <div className="min-h-screen bg-[#0f0f17] text-gray-100 font-sans">
       <Navbar
         total={total}
-        onOpenPanel={() => setIsPanelOpen(true)}
+        onOpenPanel={openPanel}
       />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -120,7 +83,7 @@ export default function App() {
 
       <ListPanel
         isOpen={isPanelOpen}
-        onClose={() => setIsPanelOpen(false)}
+        onClose={closePanel}
         list={list}
         onRemove={remove}
         onClear={clear}
