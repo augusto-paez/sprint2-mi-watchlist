@@ -7,6 +7,15 @@ export default function ItemCard({ item, isInList, onToggle }) {
                     alt={item.nombre}
                     className="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-300"
                 />
+
+                {/* Badge condicional: Multijugador (solo si item.multijugador es true) */}
+                {item.multijugador && (
+                    <span className="absolute top-2 left-2 bg-indigo-900/80 backdrop-blur-sm text-indigo-200 font-semibold text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md border border-indigo-500/40">
+                        🎮 Multijugador
+                    </span>
+                )}
+
+                {/* Puntaje */}
                 <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-yellow-400 font-bold text-xs px-2.5 py-1 rounded-full border border-yellow-500/30">
                     ★ {item.puntaje}
                 </div>
