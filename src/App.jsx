@@ -15,6 +15,7 @@ export default function App() {
   const catalogoFiltrado = items.filter((item) =>
     item.nombre.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
+
   const toggle = (item) => {
     setList((prevList) => {
       const exists = prevList.some((i) => i.id === item.id);
@@ -23,6 +24,14 @@ export default function App() {
       }
       return [...prevList, item];
     });
+  };
+
+
+  const remove = (item) => {
+    setList((prevList) => prevList.filter((i) => i.id !== item.id));
+  };
+  const clear = () => {
+    setList([]);
   };
 
   const isInList = (item) => list.some((i) => i.id === item.id);
@@ -81,6 +90,8 @@ export default function App() {
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
         list={list}
+        onRemove={remove}
+        onClear={clear}
       />
     </div>
   );
