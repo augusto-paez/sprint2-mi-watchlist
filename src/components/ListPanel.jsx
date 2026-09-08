@@ -1,4 +1,21 @@
+import { useEffect } from 'react';
+
 export default function ListPanel({ isOpen, onClose, list, onRemove, onClear }) {
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     const handleClear = () => {
@@ -75,7 +92,6 @@ export default function ListPanel({ isOpen, onClose, list, onRemove, onClear }) 
                         )}
                     </div>
                 </div>
-
 
                 {list.length > 0 && (
                     <div className="border-t border-gray-800 pt-4 mt-auto">
