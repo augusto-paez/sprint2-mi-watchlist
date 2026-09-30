@@ -4,7 +4,7 @@
 
 Proyecto práctico realizado para el **Sprint 2** de la *Diplomatura en Desarrollo Web FullStack*.
 
-*Link netlify:* https://despueslojuego.netlify.app/
+Link netlify: https://despueslojuego.netlify.app/
 ---
 
 ## 🚀 Tecnologías Utilizadas
